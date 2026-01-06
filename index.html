@@ -753,6 +753,30 @@
         document.getElementById('cardModal').addEventListener('click', (e) => {
             if (e.target.id === 'cardModal') closeModal();
         });
+        let currentUser = null;
+
+async function checkUser() {
+  const { data } = await supabase.auth.getUser();
+  currentUser = data.user;
+
+  document.getElementById('loginBtn').style.display = currentUser ? 'none' : 'inline-block';
+  document.getElementById('logoutBtn').style.display = currentUser ? 'inline-block' : 'none';
+}
+
+document.getElementById('loginBtn').onclick = async () => {
+  const email = prompt("Entre ton email");
+  if (!email) return;
+  await supabase.auth.signInWithOtp({ email });
+  alert("Regarde tes mails et clique sur le lien 👍");
+};
+
+document.getElementById('logoutBtn').onclick = async () => {
+  await supabase.auth.signOut();
+  location.reload();
+};
+
+checkUser();
+
     </script>
 </body>
 </html>

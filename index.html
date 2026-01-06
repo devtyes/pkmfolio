@@ -766,7 +766,12 @@ async function checkUser() {
 document.getElementById('loginBtn').onclick = async () => {
   const email = prompt("Entre ton email");
   if (!email) return;
-  await supabase.auth.signInWithOtp({ email });
+await supabase.auth.signInWithOtp({
+  email,
+  options: {
+    emailRedirectTo: 'https://pkmfolio-mu.vercel.app'
+  }
+});
   alert("Regarde tes mails et clique sur le lien 👍");
 };
 

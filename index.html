@@ -16,8 +16,7 @@
             <div class="logo-text">Pokémon <span class="gold">Portfolio</span></div>
         </div>
     </div>
-    <button id="loginBtn">Se connecter</button>
-        <button id="logoutBtn" style="display:none">Se déconnecter</button>
+
     <div class="container">
         <div class="grid">
             <div>
@@ -202,44 +201,6 @@
             </div>
         </div>
     </div>
-    
-<script type="module">
-  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
-
-  const supabase = createClient(
-    'https://bgotpvgewsjkmbvkegbs.supabase.co',
-    'sb_publishable_6V-ktdMnyGQcYLJ3rPhSNA_kpkZPdVK'
-  );
-
-  let currentUser = null;
-
-  async function checkUser() {
-    const { data } = await supabase.auth.getUser();
-    currentUser = data.user;
-
-    document.getElementById('loginBtn').style.display = currentUser ? 'none' : 'inline-block';
-    document.getElementById('logoutBtn').style.display = currentUser ? 'inline-block' : 'none';
-  }
-
-  document.getElementById('loginBtn').onclick = async () => {
-    const email = prompt("Entre ton email");
-    if (!email) return;
-    await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        emailRedirectTo: 'https://pkmfolio-mu.vercel.app'
-      }
-    });
-    alert("Regarde tes mails et clique sur le lien 👍");
-  };
-
-  document.getElementById('logoutBtn').onclick = async () => {
-    await supabase.auth.signOut();
-    location.reload();
-  };
-
-  checkUser();
-</script>
 
     <script>
         let cards = JSON.parse(localStorage.getItem('pokemonCards') || '[]');
@@ -790,36 +751,6 @@
         document.getElementById('cardModal').addEventListener('click', (e) => {
             if (e.target.id === 'cardModal') closeModal();
         });
-        let currentUser = null;
-
-async function checkUser() {
-  const { data } = await supabase.auth.getUser();
-  currentUser = data.user;
-
-  document.getElementById('loginBtn').style.display = currentUser ? 'none' : 'inline-block';
-  document.getElementById('logoutBtn').style.display = currentUser ? 'inline-block' : 'none';
-}
-
-document.getElementById('loginBtn').onclick = async () => {
-  const email = prompt("Entre ton email");
-  if (!email) return;
-await supabase.auth.signInWithOtp({
-  email,
-  options: {
-    emailRedirectTo: 'https://pkmfolio-mu.vercel.app'
-  }
-});
-  alert("Regarde tes mails et clique sur le lien 👍");
-};
-
-document.getElementById('logoutBtn').onclick = async () => {
-  await supabase.auth.signOut();
-  location.reload();
-};
-
-checkUser();
-
     </script>
-    
 </body>
 </html>

@@ -376,7 +376,6 @@ th {
     text-transform: uppercase;
     letter-spacing: 0.05em;
     font-weight: 500;
-    white-space: nowrap;
 }
 
 th:nth-child(4),

@@ -1006,17 +1006,8 @@
             const months = [];
             const monthNames = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
             const now = new Date();
-            
-            // This logic defines a 12-month window from December to November.
-            // We determine the end year of the period. If we're in Nov or Dec, it's the current year.
-            // Otherwise, it's the previous year. This ensures the window is mostly in the past.
-            let periodEndYear = (now.getMonth() >= 10) ? now.getFullYear() : now.getFullYear() - 1;
-            
-            // The start date is December of the year before the period ends.
-            const startDate = new Date(periodEndYear, -1, 1); // -1 for month is December of previous year
-
-            for (let i = 0; i < 12; i++) {
-                const d = new Date(startDate.getFullYear(), startDate.getMonth() + i, 1);
+            for (let i = 5; i >= 0; i--) {
+                const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
                 months.push({
                     label: monthNames[d.getMonth()],
                     month: d.getMonth(),
@@ -1047,13 +1038,13 @@
                     labels: labels,
                     datasets: [{
                         label: 'Valeur actuelle',
-                        data: Array(12).fill(0),
+                        data: [0, 0, 0, 0, 0, 0],
                         borderColor: '#d4af37',
                         backgroundColor: 'rgba(212, 175, 55, 0.1)',
                         tension: 0.4
                     }, {
                         label: 'Total investi',
-                        data: Array(12).fill(0),
+                        data: [0, 0, 0, 0, 0, 0],
                         borderColor: '#6b5542',
                         backgroundColor: 'rgba(107, 85, 66, 0.1)',
                         tension: 0.4
@@ -1069,11 +1060,11 @@
                     labels: labels,
                     datasets: [{
                         label: 'Achats',
-                        data: Array(12).fill(0),
-                        backgroundColor: '#ef4444'
+                        data: [0, 0, 0, 0, 0, 0],
+                        backgroundColor: '#6b5542'
                     }, {
                         label: 'Ventes',
-                        data: Array(12).fill(0),
+                        data: [0, 0, 0, 0, 0, 0],
                         backgroundColor: '#d4af37'
                     }]
                 },
@@ -1083,22 +1074,23 @@
         }
 
         function updateCharts() {
-            const lastMonths = getLastSixMonths();
+            const lastSixMonths = getLastSixMonths();
 
-            charts.monthly.data.labels = lastMonths.map(m => m.label);
-            charts.portfolio.data.labels = lastMonths.map(m => m.label);
+            // Données pour le graphique mensuel (Achats/Ventes par mois)
+            const purchaseData = Array(6).fill(0);
+            const saleData = Array(6).fill(0);
 
-            const purchaseData = Array(12).fill(0);
-            const saleData = Array(12).fill(0);
-            const investedCumul = Array(12).fill(0);
-            const valueCumul = Array(12).fill(0);
+            // Données pour le graphique portfolio (cumul investissement/valeur)
+            const investedCumul = Array(6).fill(0);
+            const valueCumul = Array(6).fill(0);
 
             cards.forEach(card => {
                 const date = new Date(card.createdAt);
                 const cardMonth = date.getMonth();
                 const cardYear = date.getFullYear();
 
-                const monthIndex = lastMonths.findIndex(m => m.month === cardMonth && m.year === cardYear);
+                // Trouver l'index du mois correspondant
+                const monthIndex = lastSixMonths.findIndex(m => m.month === cardMonth && m.year === cardYear);
 
                 if (monthIndex !== -1) {
                     purchaseData[monthIndex] += card.purchasePrice;
@@ -1107,9 +1099,10 @@
                     }
                 }
 
-                // Cumulative calculation
-                lastMonths.forEach((m, idx) => {
-                    if (cardYear < m.year || (cardYear === m.year && cardMonth <= m.month)) {
+                // Pour le cumul, on ajoute à tous les mois >= date d'achat
+                lastSixMonths.forEach((m, idx) => {
+                    const monthDate = new Date(m.year, m.month, 1);
+                    if (date <= monthDate || (cardMonth === m.month && cardYear === m.year)) {
                         investedCumul[idx] += card.purchasePrice;
                         if (!card.isSold) {
                             valueCumul[idx] += (card.currentPrice || 0);
@@ -1118,15 +1111,14 @@
                 });
             });
 
-            // Update portfolio chart
+            // Mise à jour graphique portfolio
             charts.portfolio.data.datasets[0].data = valueCumul;
             charts.portfolio.data.datasets[1].data = investedCumul;
-            
-            // Update monthly chart
+            charts.portfolio.update();
+
+            // Mise à jour graphique mensuel
             charts.monthly.data.datasets[0].data = purchaseData;
             charts.monthly.data.datasets[1].data = saleData;
-
-            charts.portfolio.update();
             charts.monthly.update();
         }
 

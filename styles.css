@@ -29,7 +29,6 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    position: relative;
 }
 
 .logo {
@@ -41,17 +40,34 @@ body {
 .logo-icon {
     width: 40px;
     height: 40px;
-    background-image: url('https://www.webstickersmuraux.com/fr/img/pkm003-jpg/folder/products-listado-merchant/autocollants-pokeball-classique-pokemon.jpg');
-    background-size: cover;
-    background-position: center;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
     border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
     position: relative;
 }
 
-.logo-icon::before,
+.logo-icon::before {
+    content: '';
+    position: absolute;
+    width: 40px;
+    height: 20px;
+    background: white;
+    top: 0;
+    border-radius: 20px 20px 0 0;
+}
+
 .logo-icon::after {
-    display: none;
+    content: '';
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: white;
+    border: 3px solid #0a0a0a;
+    border-radius: 50%;
+    z-index: 1;
 }
 
 .logo-text {
@@ -68,8 +84,8 @@ body {
     display: flex;
     gap: 1rem;
     align-items: center;
-    position: absolute;
-    right: 1.5rem;
+    margin-left: auto;
+    padding-right: 1rem;
 }
 
 .auth-controls span {
@@ -89,21 +105,6 @@ body {
     background: rgba(239, 68, 68, 0.1);
     padding: 0.5rem;
     border-radius: 4px;
-}
-
-.save-warning {
-    color: #ef4444;
-    font-size: 0.8rem;
-    font-weight: bold;
-    margin-right: 1rem;
-    text-align: right;
-    max-width: 200px;
-    line-height: 1.2;
-    animation: pulse-warning 2s infinite;
-}
-
-@keyframes pulse-warning {
-    0% { opacity: 1; } 50% { opacity: 0.8; } 100% { opacity: 1; }
 }
 
 /* Container */
@@ -209,34 +210,7 @@ body {
 }
 
 .global-stat-item {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1.25rem;
-    background: #1a1a1a;
-    border-radius: 8px;
-    border: 1px solid #333;
-    transition: transform 0.2s;
-}
-
-.global-stat-item:hover {
-    transform: translateY(-2px);
-    border-color: #4a4a4a;
-}
-
-.stat-icon-wrapper {
-    width: 48px;
-    height: 48px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
-.stat-icon-wrapper svg {
-    width: 24px;
-    height: 24px;
+    text-align: center;
 }
 
 .global-stat-label {
@@ -244,23 +218,13 @@ body {
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.5rem;
 }
 
 .global-stat-value {
     font-size: 1.5rem;
     font-weight: bold;
     color: #f5f5f5;
-}
-
-.expense-item .stat-icon-wrapper {
-    background: rgba(239, 68, 68, 0.15);
-    color: #ef4444;
-}
-
-.sales-item .stat-icon-wrapper {
-    background: rgba(16, 185, 129, 0.15);
-    color: #10b981;
 }
 
 /* Portfolio Summary */
@@ -830,37 +794,13 @@ input[disabled] {
     border-color: #4a4a4a;
 }
 
-.mobile-nav {
-    display: none;
-}
-
-@media (min-width: 769px) and (max-width: 1024px) {
-    .header {
-        justify-content: space-between;
-    }
-
-    .auth-controls {
-        position: static;
-    }
-
+@media (max-width: 1200px) {
     .grid {
-        display: flex;
-        flex-direction: column;
-        height: auto;
+        grid-template-columns: 1fr;
     }
 
     .stats-grid {
         grid-template-columns: repeat(2, 1fr);
-    }
-
-    .container {
-        overflow-y: auto;
-        display: block;
-    }
-
-    .table-container {
-        flex: none;
-        height: auto;
     }
 }
 
@@ -874,31 +814,15 @@ input[disabled] {
     }
 
     .auth-controls {
-        position: static;
+        margin-left: 0;
+        padding-right: 0;
         width: 100%;
         justify-content: center;
         flex-wrap: wrap;
     }
 
-    .save-warning {
-        width: 100%;
-        text-align: center;
-        margin-right: 0;
-        margin-bottom: 0.75rem;
-        max-width: none;
-    }
-
-    .grid {
-        display: block;
-        height: auto;
-    }
-
     .container {
         padding: 1rem;
-        padding-bottom: 8rem; /* Espace pour la barre de nav + marge de sécurité */
-        overflow-y: auto; /* Active le scroll vertical pour tout le contenu */
-        display: block; /* Désactive le flexbox qui limitait la hauteur */
-        -webkit-overflow-scrolling: touch; /* Scroll fluide sur iOS */
     }
 
     .stats-grid {
@@ -951,6 +875,12 @@ input[disabled] {
     }
 
     /* Mobile Navigation & Tabs */
+    .container {
+        padding-bottom: 7rem; /* Espace pour la barre de nav + marge de sécurité */
+        overflow-y: auto; /* Active le scroll vertical pour tout le contenu */
+        display: block; /* Désactive le flexbox qui limitait la hauteur */
+    }
+
     .mobile-nav {
         display: flex;
         position: fixed;
@@ -960,7 +890,7 @@ input[disabled] {
         background: #1a1a1a;
         border-top: 1px solid #2d2d2d;
         padding: 0.75rem;
-        z-index: 900;
+        z-index: 1000;
         justify-content: space-around;
         padding-bottom: max(0.75rem, env(safe-area-inset-bottom)); /* Support iPhone X+ */
     }
@@ -1000,9 +930,5 @@ input[disabled] {
     .table-container {
         flex: none; /* Le tableau ne cherche plus à remplir l'écran */
         height: auto; /* Il prend sa hauteur naturelle */
-    }
-
-    .modal-footer {
-        flex-direction: column; /* Empile les boutons (Annuler, Suivant, Ajouter) sur mobile */
     }
 }

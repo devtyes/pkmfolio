@@ -1006,8 +1006,17 @@
             const months = [];
             const monthNames = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
             const now = new Date();
-            for (let i = 11; i >= 0; i--) {
-                const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+            
+            // This logic defines a 12-month window from December to November.
+            // We determine the end year of the period. If we're in Nov or Dec, it's the current year.
+            // Otherwise, it's the previous year. This ensures the window is mostly in the past.
+            let periodEndYear = (now.getMonth() >= 10) ? now.getFullYear() : now.getFullYear() - 1;
+            
+            // The start date is December of the year before the period ends.
+            const startDate = new Date(periodEndYear, -1, 1); // -1 for month is December of previous year
+
+            for (let i = 0; i < 12; i++) {
+                const d = new Date(startDate.getFullYear(), startDate.getMonth() + i, 1);
                 months.push({
                     label: monthNames[d.getMonth()],
                     month: d.getMonth(),

@@ -1073,51 +1073,65 @@
         }
 
         function updateCharts() {
-            const lastSixMonths = getLastSixMonths();
+            const monthNames = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
+            
+            let yearToShow = new Date().getFullYear();
+            if (cards.length > 0) {
+                 const latestDate = new Date(Math.max.apply(null, cards.map(c => new Date(c.createdAt))));
+                 yearToShow = latestDate.getFullYear();
+            }
 
-            // Données pour le graphique mensuel (Achats/Ventes par mois)
+            const chartMonths = [];
+            for (let i = 0; i < 12; i++) {
+                chartMonths.push({
+                    label: monthNames[i],
+                    month: i,
+                    year: yearToShow
+                });
+            }
+
+            const labels = chartMonths.map(m => m.label);
+            charts.portfolio.data.labels = labels;
+            charts.monthly.data.labels = labels;
+
             const purchaseData = Array(12).fill(0);
             const saleData = Array(12).fill(0);
-
-            // Données pour le graphique portfolio (cumul investissement/valeur)
             const investedCumul = Array(12).fill(0);
             const valueCumul = Array(12).fill(0);
 
-            cards.forEach(card => {
-                const date = new Date(card.createdAt);
-                const cardMonth = date.getMonth();
-                const cardYear = date.getFullYear();
+            if (cards.length > 0) {
+                cards.forEach(card => {
+                    const date = new Date(card.createdAt);
+                    const cardMonth = date.getMonth();
+                    const cardYear = date.getFullYear();
 
-                // Trouver l'index du mois correspondant
-                const monthIndex = lastSixMonths.findIndex(m => m.month === cardMonth && m.year === cardYear);
+                    const monthIndex = chartMonths.findIndex(m => m.month === cardMonth && m.year === cardYear);
 
-                if (monthIndex !== -1) {
-                    purchaseData[monthIndex] += card.purchasePrice;
-                    if (card.isSold && card.salePrice) {
-                        saleData[monthIndex] += card.salePrice;
-                    }
-                }
-
-                // Pour le cumul, on ajoute à tous les mois >= date d'achat
-                lastSixMonths.forEach((m, idx) => {
-                    const monthDate = new Date(m.year, m.month, 1);
-                    if (date <= monthDate || (cardMonth === m.month && cardYear === m.year)) {
-                        investedCumul[idx] += card.purchasePrice;
-                        if (!card.isSold) {
-                            valueCumul[idx] += (card.currentPrice || 0);
+                    if (monthIndex !== -1) {
+                        purchaseData[monthIndex] += card.purchasePrice;
+                        if (card.isSold && card.salePrice) {
+                            saleData[monthIndex] += card.salePrice;
                         }
                     }
-                });
-            });
 
-            // Mise à jour graphique portfolio
+                    chartMonths.forEach((m, idx) => {
+                        const monthDate = new Date(m.year, m.month, 1);
+                        if (date <= monthDate || (cardMonth === m.month && cardYear === m.year)) {
+                            investedCumul[idx] += card.purchasePrice;
+                            if (!card.isSold) {
+                                valueCumul[idx] += (card.currentPrice || 0);
+                            }
+                        }
+                    });
+                });
+            }
+
             charts.portfolio.data.datasets[0].data = valueCumul;
             charts.portfolio.data.datasets[1].data = investedCumul;
-            charts.portfolio.update();
-
-            // Mise à jour graphique mensuel
             charts.monthly.data.datasets[0].data = purchaseData;
             charts.monthly.data.datasets[1].data = saleData;
+            
+            charts.portfolio.update();
             charts.monthly.update();
         }
 

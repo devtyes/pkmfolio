@@ -29,7 +29,6 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    justify-content: space-between;
     position: relative;
 }
 
@@ -835,7 +834,15 @@ input[disabled] {
     display: none;
 }
 
-@media (max-width: 1024px) {
+@media (min-width: 769px) and (max-width: 1024px) {
+    .header {
+        justify-content: space-between;
+    }
+
+    .auth-controls {
+        position: static;
+    }
+
     .grid {
         display: flex;
         flex-direction: column;

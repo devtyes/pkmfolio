@@ -210,6 +210,11 @@
                         <label for="salePrice">Prix de vente (€) *</label>
                         <input type="number" id="salePrice" name="salePrice" step="0.01" placeholder="0.00">
                     </div>
+                    <div class="form-group" id="quantityGroup">
+                        <label for="cardQuantity">Nombre d'exemplaires</label>
+                        <input type="number" id="cardQuantity" name="cardQuantity" value="1" min="1" required>
+                        <small style="color: #808080; font-size: 0.75rem;">Les exemplaires seront créés à l'identique et pourront être modifiés individuellement.</small>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -489,6 +494,7 @@
             document.getElementById('cardId').value = '';
             document.getElementById('isCloning').value = '';
             document.getElementById('salePriceGroup').style.display = 'none';
+            document.getElementById('quantityGroup').style.display = 'block';
 
             if (editCard) {
                 document.getElementById('modalTitle').textContent = 'Modifier une carte';
@@ -509,6 +515,7 @@
                 ['cardName', 'cardImage', 'cardmarketUrl', 'cardLanguage'].forEach(id => {
                     document.getElementById(id).disabled = false;
                 });
+                document.getElementById('quantityGroup').style.display = 'none';
             } else if (cloneFromCard) {
                 document.getElementById('modalTitle').textContent = 'Cloner une carte';
                 document.getElementById('submitBtn').textContent = 'Cloner';
@@ -523,12 +530,14 @@
                 if (cloneFromCard.currentPrice) {
                     document.getElementById('currentPrice').value = cloneFromCard.currentPrice;
                 }
+                document.getElementById('cardQuantity').value = 1;
             } else {
                 document.getElementById('modalTitle').textContent = 'Ajouter une carte';
                 document.getElementById('submitBtn').textContent = 'Ajouter';
                 ['cardName', 'cardImage', 'cardmarketUrl', 'cardLanguage'].forEach(id => {
                     document.getElementById(id).disabled = false;
                 });
+                document.getElementById('cardQuantity').value = 1;
             }
         }
 
@@ -565,16 +574,19 @@
             if (cardId) {
                 cards = cards.map(c => c.id === cardId ? { ...c, ...cardData, updatedAt: new Date().toISOString() } : c);
             } else {
-                const card = {
-                    ...cardData,
-                    id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
-                    createdAt: new Date().toISOString()
-                };
-                const similarCards = cards.filter(c => getCardKey(c) === getCardKey(card));
-                if (similarCards.length > 0 && similarCards[0].currentPrice !== null) {
-                    card.currentPrice = similarCards[0].currentPrice;
+                const quantity = parseInt(document.getElementById('cardQuantity').value) || 1;
+                for (let i = 0; i < quantity; i++) {
+                    const card = {
+                        ...cardData,
+                        id: Date.now().toString() + Math.random().toString(36).substr(2, 9) + i,
+                        createdAt: new Date().toISOString()
+                    };
+                    const similarCards = cards.filter(c => getCardKey(c) === getCardKey(card));
+                    if (similarCards.length > 0 && similarCards[0].currentPrice !== null) {
+                        card.currentPrice = similarCards[0].currentPrice;
+                    }
+                    cards.push(card);
                 }
-                cards.push(card);
             }
 
             try {

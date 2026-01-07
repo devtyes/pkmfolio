@@ -489,6 +489,7 @@
             document.getElementById('cardId').value = '';
             document.getElementById('isCloning').value = '';
             document.getElementById('salePriceGroup').style.display = 'none';
+            const continueBtn = document.getElementById('submitAndContinueBtn');
 
             if (editCard) {
                 document.getElementById('modalTitle').textContent = 'Modifier une carte';
@@ -509,6 +510,7 @@
                 ['cardName', 'cardImage', 'cardmarketUrl', 'cardLanguage'].forEach(id => {
                     document.getElementById(id).disabled = false;
                 });
+                if (continueBtn) continueBtn.style.display = 'none'; // Pas de "Suivant" en mode édition
             } else if (cloneFromCard) {
                 document.getElementById('modalTitle').textContent = 'Cloner une carte';
                 document.getElementById('submitBtn').textContent = 'Cloner';
@@ -523,12 +525,14 @@
                 if (cloneFromCard.currentPrice) {
                     document.getElementById('currentPrice').value = cloneFromCard.currentPrice;
                 }
+                if (continueBtn) continueBtn.style.display = 'block';
             } else {
                 document.getElementById('modalTitle').textContent = 'Ajouter une carte';
                 document.getElementById('submitBtn').textContent = 'Ajouter';
                 ['cardName', 'cardImage', 'cardmarketUrl', 'cardLanguage'].forEach(id => {
                     document.getElementById(id).disabled = false;
                 });
+                if (continueBtn) continueBtn.style.display = 'block';
             }
         }
 
@@ -544,10 +548,12 @@
 
         async function saveCard(event) {
             event.preventDefault();
-            const submitBtn = document.getElementById('submitBtn');
-            const originalText = submitBtn.textContent;
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Sauvegarde...';
+            
+            const submitter = event.submitter || document.getElementById('submitBtn');
+            const isContinue = submitter.id === 'submitAndContinueBtn';
+            const originalText = submitter.textContent;
+            submitter.disabled = true;
+            submitter.textContent = 'Sauvegarde...';
 
             const cardId = document.getElementById('cardId').value;
             const cardData = {
@@ -579,13 +585,21 @@
 
             try {
                 await saveData(); // Use central save function
-                closeModal();
                 refreshUI();
+                
+                if (isContinue) {
+                    submitter.textContent = 'Ajouté !';
+                    setTimeout(() => {
+                        submitter.disabled = false;
+                        submitter.textContent = originalText;
+                    }, 1000);
+                } else {
+                    closeModal();
+                }
             } catch (e) {
                 // L'erreur est déjà affichée par saveData
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = originalText;
+                submitter.disabled = false;
+                submitter.textContent = originalText;
             }
         }
 

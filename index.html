@@ -693,7 +693,17 @@
             };
 
             if (cardId) {
-                cards = cards.map(c => c.id === cardId ? { ...c, ...cardData, updatedAt: new Date().toISOString() } : c);
+                const targetKey = getCardKey(cardData);
+                cards = cards.map(c => {
+                    if (c.id === cardId) {
+                        return { ...c, ...cardData, updatedAt: new Date().toISOString() };
+                    }
+                    // Mise à jour du prix pour tous les exemplaires identiques
+                    if (getCardKey(c) === targetKey) {
+                        return { ...c, currentPrice: cardData.currentPrice };
+                    }
+                    return c;
+                });
             } else {
                 const quantity = parseInt(document.getElementById('cardQuantity').value) || 1;
                 

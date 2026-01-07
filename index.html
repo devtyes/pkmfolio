@@ -776,6 +776,16 @@
             }
         }
 
+        function updateGroupPrice(groupKey) {
+            const newPrice = prompt('Nouveau prix actuel (€) - s\'appliquera à tous les exemplaires :');
+            if (newPrice !== null && !isNaN(parseFloat(newPrice))) {
+                const price = parseFloat(newPrice);
+                cards = cards.map(c => getCardKey(c) === groupKey ? { ...c, currentPrice: price } : c);
+                saveData();
+                refreshUI();
+            }
+        }
+
         function toggleSoldStatus(cardId, value) {
             const card = cards.find(c => c.id === cardId);
             if (!card) return;
@@ -926,6 +936,7 @@
                     if (action === 'cloneCard') return cloneCard(btn.dataset.id);
                     if (action === 'editCard') return editCard(btn.dataset.id);
                     if (action === 'deleteCard') return deleteCard(btn.dataset.id);
+                    if (action === 'updateGroupPrice') return updateGroupPrice(btn.dataset.key);
                     if (action === 'openModal') return openModal(); if (action === 'closeModal') return closeModal();
                 });
 

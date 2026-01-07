@@ -873,4 +873,55 @@ input[disabled] {
     .stat-value {
         font-size: 1.5rem; /* Police un peu plus petite pour éviter les retours à la ligne */
     }
+
+    /* Mobile Navigation & Tabs */
+    .container {
+        padding-bottom: 5rem; /* Espace pour la barre de nav */
+    }
+
+    .mobile-nav {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: #1a1a1a;
+        border-top: 1px solid #2d2d2d;
+        padding: 0.75rem;
+        z-index: 1000;
+        justify-content: space-around;
+        padding-bottom: max(0.75rem, env(safe-area-inset-bottom)); /* Support iPhone X+ */
+    }
+
+    .nav-item {
+        background: none;
+        border: none;
+        color: #808080;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.25rem;
+        font-size: 0.75rem;
+        cursor: pointer;
+    }
+
+    .nav-item.active {
+        color: #d4af37;
+    }
+
+    .nav-icon {
+        font-size: 1.25rem;
+    }
+
+    /* Gestion des vues onglets */
+    .mobile-view {
+        display: none !important; /* Caché par défaut sur mobile */
+    }
+
+    .mobile-view.active {
+        display: flex !important; /* Affiché si actif */
+        flex-direction: column;
+        gap: 1.5rem;
+        height: 100%;
+    }
 }

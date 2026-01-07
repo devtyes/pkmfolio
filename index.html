@@ -29,7 +29,7 @@
 
     <div class="container">
         <div class="grid">
-            <div>
+            <div id="tab-portfolio" class="mobile-view active">
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-label">Total Investi</div>
@@ -116,7 +116,7 @@
                 </div>
             </div>
 
-            <div>
+            <div id="tab-analysis" class="mobile-view">
                 <div class="portfolio-summary">
                     <div class="portfolio-summary-title">Analyse du Portfolio</div>
                     <div class="portfolio-summary-text">Statistiques et performance en temps réel</div>
@@ -247,6 +247,18 @@
         </div>
     </div>
 
+    <!-- Mobile Navigation Bar -->
+    <nav class="mobile-nav">
+        <button class="nav-item active" data-target="tab-portfolio">
+            <span class="nav-icon">🎴</span>
+            <span class="nav-label">Portfolio</span>
+        </button>
+        <button class="nav-item" data-target="tab-analysis">
+            <span class="nav-icon">📈</span>
+            <span class="nav-label">Analyse</span>
+        </button>
+    </nav>
+
     <script type="module">
         // Importation des modules Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -332,6 +344,18 @@
             });
             document.querySelectorAll('[data-action="filterCondition"]').forEach(btn => {
                 btn.addEventListener('click', (e) => filterByCondition(e.currentTarget.dataset.value, e.currentTarget));
+            });
+
+            // Mobile Tab Navigation
+            document.querySelectorAll('.nav-item').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    document.querySelectorAll('.mobile-view').forEach(v => {
+                        v.classList.remove('active');
+                        if (v.id === btn.dataset.target) v.classList.add('active');
+                    });
+                });
             });
         });
 

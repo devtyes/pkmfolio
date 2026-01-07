@@ -1,19 +1,58 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pokémon Portfolio</title>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8' fill='%23d4af37'/%3E%3C/svg%3E">
+    <link rel="icon"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8' fill='%23d4af37'/%3E%3C/svg%3E">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
     <link rel="stylesheet" href="/styles.css">
     <!-- Styles have been moved to styles.css to avoid rendering raw CSS text in the page -->
+    <style>
+        /* Styles spécifiques pour l'auth ajoutés ici */
+        .auth-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin-left: auto;
+            padding-right: 1rem;
+        }
+
+        .auth-controls span {
+            color: #b8b8b8;
+            font-size: 0.9rem;
+        }
+
+        #authModal .form-group {
+            margin-bottom: 1rem;
+        }
+
+        #authError {
+            color: #ef4444;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            display: none;
+            background: rgba(239, 68, 68, 0.1);
+            padding: 0.5rem;
+            border-radius: 4px;
+        }
+    </style>
 </head>
+
 <body>
     <div class="header">
         <div class="logo">
             <div class="logo-icon"></div>
             <div class="logo-text">Pokémon <span class="gold">Portfolio</span></div>
+        </div>
+        <div class="auth-controls">
+            <div id="userInfo" style="display: none; align-items: center; gap: 10px;">
+                <span id="userEmailDisplay"></span>
+                <button class="btn" id="logoutBtn">Déconnexion</button>
+            </div>
+            <button class="btn btn-primary" id="loginBtn">Connexion / Inscription</button>
         </div>
     </div>
 
@@ -59,9 +98,12 @@
 
                 <div class="filters">
                     <div class="filter-group">
-                        <button class="btn active" data-filter="all" data-action="filterStatus" data-value="all">Toutes</button>
-                        <button class="btn" data-filter="unsold" data-action="filterStatus" data-value="unsold">Non vendues</button>
-                        <button class="btn" data-filter="sold" data-action="filterStatus" data-value="sold">Vendues</button>
+                        <button class="btn active" data-filter="all" data-action="filterStatus"
+                            data-value="all">Toutes</button>
+                        <button class="btn" data-filter="unsold" data-action="filterStatus" data-value="unsold">Non
+                            vendues</button>
+                        <button class="btn" data-filter="sold" data-action="filterStatus"
+                            data-value="sold">Vendues</button>
                         <div class="divider"></div>
                         <button class="btn" data-action="filterCondition" data-value="NM">NM</button>
                         <button class="btn" data-action="filterCondition" data-value="EX">EX</button>
@@ -92,7 +134,8 @@
                                 <td colspan="10">
                                     <div class="empty-state">
                                         <div class="empty-icon">🎴</div>
-                                        <h3 style="color: #d4af37; margin-bottom: 0.5rem;">Aucune carte dans ton portfolio</h3>
+                                        <h3 style="color: #d4af37; margin-bottom: 0.5rem;">Aucune carte dans ton
+                                            portfolio</h3>
                                         <p>Clique sur "Ajouter une carte" pour commencer</p>
                                     </div>
                                 </td>
@@ -150,7 +193,8 @@
                     </div>
                     <div class="form-group">
                         <label for="cardmarketUrl">Lien Cardmarket *</label>
-                        <input type="url" id="cardmarketUrl" name="cardmarketUrl" required placeholder="https://www.cardmarket.com/...">
+                        <input type="url" id="cardmarketUrl" name="cardmarketUrl" required
+                            placeholder="https://www.cardmarket.com/...">
                     </div>
                     <div class="form-row">
                         <div class="form-group">
@@ -175,12 +219,14 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="purchasePrice">Prix d'achat (€) *</label>
-                            <input type="number" id="purchasePrice" name="purchasePrice" step="0.01" required placeholder="0.00">
+                            <input type="number" id="purchasePrice" name="purchasePrice" step="0.01" required
+                                placeholder="0.00">
                         </div>
                         <div class="form-group">
                             <label for="currentPrice">Prix actuel (€)</label>
                             <input type="number" id="currentPrice" name="currentPrice" step="0.01" placeholder="0.00">
-                            <small style="color: #808080; font-size: 0.75rem;">Partagé entre exemplaires identiques</small>
+                            <small style="color: #808080; font-size: 0.75rem;">Partagé entre exemplaires
+                                identiques</small>
                         </div>
                     </div>
                     <div class="form-group">
@@ -202,17 +248,104 @@
         </div>
     </div>
 
-    <script>
-        let cards = JSON.parse(localStorage.getItem('pokemonCards') || '[]');
-        // Sanitize any leftover placeholder values saved previously
-        sanitizeCardsArray(cards);
+    <!-- Modal d'Authentification -->
+    <div class="modal" id="authModal">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header">
+                <h2 class="modal-title">Authentification</h2>
+                <button class="close-btn" id="closeAuthModal" type="button">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="authForm">
+                    <div id="authError"></div>
+                    <div class="form-group">
+                        <label for="authEmail">Email</label>
+                        <input type="email" id="authEmail" required placeholder="email@exemple.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="authPassword">Mot de passe</label>
+                        <input type="password" id="authPassword" required placeholder="******" minlength="6">
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-top: 1rem;">
+                        <button type="submit" class="btn btn-primary" style="flex: 1;" id="submitLoginBtn">Se
+                            connecter</button>
+                        <button type="button" class="btn" style="flex: 1;" id="submitRegisterBtn">S'inscrire</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Importation des modules Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // CONFIGURATION FIREBASE - REMPLACE CECI PAR TA PROPRE CONFIGURATION
+        const firebaseConfig = {
+            apiKey: "AIzaSyDDo3ckUexTbZJjWybvLLD_ALXY9Blkj0I",
+            authDomain: "pkmfolio.firebaseapp.com",
+            projectId: "pkmfolio",
+            storageBucket: "pkmfolio.firebasestorage.app",
+            messagingSenderId: "498818844894",
+            appId: "1:498818844894:web:4b8cdda4b806cada0b9a4f",
+            measurementId: "G-KJDKZN1HPK"
+        };
+
+        // Initialisation Firebase
+        let app, auth, db;
+        let currentUser = null;
+
+        try {
+            app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getFirestore(app);
+        } catch (e) {
+            console.error("Erreur init Firebase. As-tu rempli la config ?", e);
+        }
+
+        let cards = [];
         let filters = { status: 'all', condition: 'all' };
         let charts = {};
         let expandedGroups = new Set();
 
-
-
         document.addEventListener('DOMContentLoaded', () => {
+            // Initial load from local storage to show something immediately (or empty)
+            // The real data load happens in onAuthStateChanged
+            const localData = localStorage.getItem('pokemonCards');
+            if (localData) {
+                cards = JSON.parse(localData);
+                sanitizeCardsArray(cards);
+            }
+
+            // Auth Listeners
+            if (auth) {
+                onAuthStateChanged(auth, async (user) => {
+                    currentUser = user;
+                    updateAuthUI();
+                    if (user) {
+                        // Load from Firestore
+                        await loadDataFromCloud();
+                    } else {
+                        // Fallback to local storage or clear
+                        // For now, we keep local view if logged out, or reload local
+                        const local = localStorage.getItem('pokemonCards');
+                        cards = local ? JSON.parse(local) : [];
+                        sanitizeCardsArray(cards);
+                        refreshUI();
+                    }
+                });
+            }
+
+            // Auth UI Bindings
+            document.getElementById('loginBtn').addEventListener('click', () => document.getElementById('authModal').classList.add('active'));
+            document.getElementById('closeAuthModal').addEventListener('click', () => document.getElementById('authModal').classList.remove('active'));
+            document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+            document.getElementById('submitLoginBtn').addEventListener('click', (e) => handleAuth(e, 'login'));
+            document.getElementById('submitRegisterBtn').addEventListener('click', (e) => handleAuth(e, 'register'));
+
+            // App Init
             initCharts();
             renderCards();
             updateStats();
@@ -230,6 +363,86 @@
                 btn.addEventListener('click', (e) => filterByCondition(e.currentTarget.dataset.value, e.currentTarget));
             });
         });
+
+        // --- Auth Functions ---
+
+        function updateAuthUI() {
+            const loginBtn = document.getElementById('loginBtn');
+            const userInfo = document.getElementById('userInfo');
+            const userEmailDisplay = document.getElementById('userEmailDisplay');
+
+            if (currentUser) {
+                loginBtn.style.display = 'none';
+                userInfo.style.display = 'flex';
+                userEmailDisplay.textContent = currentUser.email;
+            } else {
+                loginBtn.style.display = 'block';
+                userInfo.style.display = 'none';
+                userEmailDisplay.textContent = '';
+            }
+        }
+
+        async function handleAuth(e, mode) {
+            e.preventDefault();
+            const email = document.getElementById('authEmail').value;
+            const password = document.getElementById('authPassword').value;
+            const errorDiv = document.getElementById('authError');
+
+            try {
+                if (mode === 'login') {
+                    await signInWithEmailAndPassword(auth, email, password);
+                } else {
+                    await createUserWithEmailAndPassword(auth, email, password);
+                }
+                document.getElementById('authModal').classList.remove('active');
+                document.getElementById('authForm').reset();
+                errorDiv.style.display = 'none';
+            } catch (error) {
+                errorDiv.textContent = "Erreur: " + error.message;
+                errorDiv.style.display = 'block';
+            }
+        }
+
+        async function handleLogout() {
+            await signOut(auth);
+        }
+
+        // --- Data Persistence Functions ---
+
+        async function saveData() {
+            if (currentUser && db) {
+                // Save to Cloud
+                try {
+                    await setDoc(doc(db, "users", currentUser.uid), { cards: cards });
+                } catch (e) {
+                    console.error("Error saving to cloud", e);
+                }
+            } else {
+                // Save to Local
+                localStorage.setItem('pokemonCards', JSON.stringify(cards));
+            }
+        }
+
+        async function loadDataFromCloud() {
+            const docSnap = await getDoc(doc(db, "users", currentUser.uid));
+            if (docSnap.exists()) {
+                cards = docSnap.data().cards || [];
+                sanitizeCardsArray(cards);
+                refreshUI();
+            } else {
+                // First time login? Optional: Upload local data to cloud
+                if (cards.length > 0 && confirm("Voulez-vous sauvegarder votre portfolio local sur le cloud ?")) {
+                    await saveData();
+                }
+            }
+        }
+
+        function refreshUI() {
+            renderCards();
+            updateStats();
+            updateCharts();
+            renderPerformers();
+        }
 
         function getCardKey(card) {
             return `${card.name}|||${card.condition}|||${card.language}`;
@@ -270,7 +483,7 @@
             document.getElementById('cardId').value = '';
             document.getElementById('isCloning').value = '';
             document.getElementById('salePriceGroup').style.display = 'none';
-            
+
             if (editCard) {
                 document.getElementById('modalTitle').textContent = 'Modifier une carte';
                 document.getElementById('submitBtn').textContent = 'Enregistrer';
@@ -353,12 +566,9 @@
                 cards.push(card);
             }
 
-            localStorage.setItem('pokemonCards', JSON.stringify(cards));
+            saveData(); // Use central save function
             closeModal();
-            renderCards();
-            updateStats();
-            updateCharts();
-            renderPerformers();
+            refreshUI();
         }
 
         function editCard(cardId) {
@@ -374,11 +584,8 @@
         function deleteCard(id) {
             if (confirm('Êtes-vous sûr de vouloir supprimer cette carte ?')) {
                 cards = cards.filter(c => c.id !== id);
-                localStorage.setItem('pokemonCards', JSON.stringify(cards));
-                renderCards();
-                updateStats();
-                updateCharts();
-                renderPerformers();
+                saveData();
+                refreshUI();
             }
         }
 
@@ -387,11 +594,8 @@
             if (newPrice !== null && !isNaN(parseFloat(newPrice))) {
                 const price = parseFloat(newPrice);
                 cards = cards.map(c => getCardKey(c) === groupKey ? { ...c, currentPrice: price } : c);
-                localStorage.setItem('pokemonCards', JSON.stringify(cards));
-                renderCards();
-                updateStats();
-                updateCharts();
-                renderPerformers();
+                saveData();
+                refreshUI();
             }
         }
 
@@ -411,11 +615,8 @@
             } else if (!card.isSold) {
                 card.salePrice = null;
             }
-            localStorage.setItem('pokemonCards', JSON.stringify(cards));
-            renderCards();
-            updateStats();
-            updateCharts();
-            renderPerformers();
+            saveData();
+            refreshUI();
         }
 
         function toggleGroup(groupKey) {
@@ -512,10 +713,10 @@
                 pnlPercent: g.totalInvested > 0 ? (g.unrealizedPnL / g.totalInvested) * 100 : 0
             })).filter(p => p.pnl !== 0);
             performers.sort((a, b) => b.pnlPercent - a.pnlPercent);
-            
+
             const topPerformers = performers.slice(0, 3);
             const worstPerformers = performers.slice(-3).reverse().filter(p => p.pnlPercent < 0);
-            
+
             let html = '';
             if (topPerformers.length > 0) {
                 html += `<div class="performers-section"><div class="section-header"><span style="color: #10b981; font-size: 1.125rem;">📈</span><div class="section-title">Meilleurs Performers</div></div>${topPerformers.map(p => `<div class="performer-card"><img src="${p.imageUrl || ''}" alt="${p.name}" class="performer-img"><div class="performer-info"><div class="performer-name">${p.name}</div><div class="performer-stats"><span class="profit"><strong>${formatCurrency(p.pnl)}</strong></span><span class="profit">${p.pnlPercent >= 0 ? '+' : ''}${p.pnlPercent.toFixed(2)}%</span></div></div></div>`).join('')}</div>`;
@@ -529,16 +730,16 @@
         }
 
         function formatCurrency(amount) {
-            return new Intl.NumberFormat('fr-FR', {style: 'currency', currency: 'EUR'}).format(amount);
+            return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(amount);
         }
 
         // Attach event listeners using delegation (safe for CSP and idempotent)
         let __actionListenerAttached = false;
-        function attachEventHandlers(){
+        function attachEventHandlers() {
             // only attach the global delegated handlers once
             if (!__actionListenerAttached) {
                 __actionListenerAttached = true;
-                document.body.addEventListener('click', function(e){
+                document.body.addEventListener('click', function (e) {
                     const btn = e.target.closest('[data-action]');
                     if (!btn) return;
                     const action = btn.dataset.action;
@@ -550,7 +751,7 @@
                     if (action === 'openModal') return openModal(); if (action === 'closeModal') return closeModal();
                 });
 
-                document.body.addEventListener('change', function(e){
+                document.body.addEventListener('change', function (e) {
                     const sel = e.target.closest('[data-role="sold-select"]');
                     if (sel) return toggleSoldStatus(sel.dataset.id, e.target.value);
                 });
@@ -562,34 +763,33 @@
                 if (!srcAttr || srcAttr.includes('${') || srcAttr.includes('%7B')) {
                     img.src = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2248%22 height=%2264%22%3E%3Crect fill=%22%234a3825%22 width=%22100%25%22 height=%22100%25%22/%3E%3C/svg%3E';
                 }
-                img.onerror = function(){ this.src = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2248%22 height=%2264%22%3E%3Crect fill=%22%234a3825%22 width=%22100%25%22 height=%22100%25%22/%3E%3C/svg%3E'; };
+                img.onerror = function () { this.src = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2248%22 height=%2264%22%3E%3Crect fill=%22%234a3825%22 width=%22100%25%22 height=%22100%25%22/%3E%3C/svg%3E'; };
             });
             document.querySelectorAll('.performer-img').forEach(img => {
                 const srcAttr = img.getAttribute('src') || '';
                 if (!srcAttr || srcAttr.includes('${') || srcAttr.includes('%7B')) {
                     img.src = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2256%22%3E%3Crect fill=%22%234a3825%22 width=%22100%25%22 height=%22100%25%22/%3E%3C/svg%3E';
                 }
-                img.onerror = function(){ this.src = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2256%22%3E%3Crect fill=%22%234a3825%22 width=%22100%25%22 height=%22100%25%22/%3E%3C/svg%3E'; };
+                img.onerror = function () { this.src = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2256%22%3E%3Crect fill=%22%234a3825%22 width=%22100%25%22 height=%22100%25%22/%3E%3C/svg%3E'; };
             });
         }
 
         // stronger sanitizer: remove stored encoded placeholders too
-        function sanitizeCardsArray(arr){
+        function sanitizeCardsArray(arr) {
             let changed = false;
             arr.forEach(c => {
-                ['imageUrl','cardmarketUrl','name'].forEach(k => {
+                ['imageUrl', 'cardmarketUrl', 'name'].forEach(k => {
                     if (c[k] && (typeof c[k] === 'string') && (c[k].includes('${') || c[k].includes('%7B') || c[k].trim() === '$')) { c[k] = ''; changed = true; }
                 });
             });
             if (changed) {
-                localStorage.setItem('pokemonCards', JSON.stringify(arr));
-                // update runtime variable
-                cards = JSON.parse(localStorage.getItem('pokemonCards') || '[]');
+                // If we sanitized, we should probably save, but let's avoid auto-save loop on load
+                // Just update runtime for now, save will happen on next action
             }
         }
 
         // One-time helper exposed on window for debugging/cleanup
-        window.clearPlaceholders = function(){
+        window.clearPlaceholders = function () {
             sanitizeCardsArray(cards);
             renderCards();
             updateStats();
@@ -616,10 +816,10 @@
             const chartOptions = {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: {legend: {labels: {color: '#b8b8b8'}}},
+                plugins: { legend: { labels: { color: '#b8b8b8' } } },
                 scales: {
-                    y: {ticks: {color: '#808080'}, grid: {color: '#2d2d2d'}},
-                    x: {ticks: {color: '#808080'}, grid: {color: '#2d2d2d'}}
+                    y: { ticks: { color: '#808080' }, grid: { color: '#2d2d2d' } },
+                    x: { ticks: { color: '#808080' }, grid: { color: '#2d2d2d' } }
                 }
             };
 
@@ -670,30 +870,30 @@
 
         function updateCharts() {
             const lastSixMonths = getLastSixMonths();
-            
+
             // Données pour le graphique mensuel (Achats/Ventes par mois)
             const purchaseData = Array(6).fill(0);
             const saleData = Array(6).fill(0);
-            
+
             // Données pour le graphique portfolio (cumul investissement/valeur)
             const investedCumul = Array(6).fill(0);
             const valueCumul = Array(6).fill(0);
-            
+
             cards.forEach(card => {
                 const date = new Date(card.createdAt);
                 const cardMonth = date.getMonth();
                 const cardYear = date.getFullYear();
-                
+
                 // Trouver l'index du mois correspondant
                 const monthIndex = lastSixMonths.findIndex(m => m.month === cardMonth && m.year === cardYear);
-                
+
                 if (monthIndex !== -1) {
                     purchaseData[monthIndex] += card.purchasePrice;
                     if (card.isSold && card.salePrice) {
                         saleData[monthIndex] += card.salePrice;
                     }
                 }
-                
+
                 // Pour le cumul, on ajoute à tous les mois >= date d'achat
                 lastSixMonths.forEach((m, idx) => {
                     const monthDate = new Date(m.year, m.month, 1);
@@ -705,12 +905,12 @@
                     }
                 });
             });
-            
+
             // Mise à jour graphique portfolio
             charts.portfolio.data.datasets[0].data = valueCumul;
             charts.portfolio.data.datasets[1].data = investedCumul;
             charts.portfolio.update();
-            
+
             // Mise à jour graphique mensuel
             charts.monthly.data.datasets[0].data = purchaseData;
             charts.monthly.data.datasets[1].data = saleData;
@@ -724,7 +924,7 @@
                 document.querySelectorAll('[src]').forEach(el => {
                     const v = el.getAttribute('src');
                     if (v && v.includes('${')) {
-                        el.setAttribute('src','data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2248%22 height=%2264%22%3E%3Crect fill=%22%234a3825%22 width=%22100%25%22 height=%22100%25%22/%3E%3C/svg%3E');
+                        el.setAttribute('src', 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2248%22 height=%2264%22%3E%3Crect fill=%22%234a3825%22 width=%22100%25%22 height=%22100%25%22/%3E%3C/svg%3E');
                     }
                 });
                 // Remove bad hrefs
@@ -746,11 +946,12 @@
         document.addEventListener('DOMContentLoaded', sanitizeRenderedDom);
         // Ensure sanitize runs after each render
         const __origRenderCards = renderCards;
-        renderCards = function(){ __origRenderCards(); sanitizeRenderedDom(); sanitizeCardsArray(cards); };
+        renderCards = function () { __origRenderCards(); sanitizeRenderedDom(); sanitizeCardsArray(cards); };
 
         document.getElementById('cardModal').addEventListener('click', (e) => {
             if (e.target.id === 'cardModal') closeModal();
         });
     </script>
 </body>
+
 </html>

@@ -10,11 +10,6 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
     <link rel="stylesheet" href="/styles.css">
     <!-- Styles have been moved to styles.css to avoid rendering raw CSS text in the page -->
-    <style>
-        @media (min-width: 769px) {
-            .mobile-nav { display: none !important; }
-        }
-    </style>
 </head>
 
 <body>
@@ -24,8 +19,6 @@
             <div class="logo-text">Pokémon <span class="gold">Portfolio</span></div>
         </div>
         <div class="auth-controls">
-            <div id="saveWarning" class="save-warning">⚠️ Créez un compte pour conserver vos données</div>
-            <button class="btn" id="helpBtn">Comment utiliser</button>
             <div id="userInfo" style="display: none; align-items: center; gap: 10px;">
                 <span id="userEmailDisplay"></span>
                 <button class="btn" id="logoutBtn">Déconnexion</button>
@@ -63,23 +56,13 @@
                 <div class="global-stats">
                     <div class="global-stats-title">📊 Statistiques Globales</div>
                     <div class="global-stats-grid">
-                        <div class="global-stat-item expense-item">
-                            <div class="stat-icon-wrapper">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor"><path d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V192c0-35.3-28.7-64-64-64H80c-8.8 0-16-7.2-16-16s7.2-16 16-16H448c17.7 0 32-14.3 32-32s-14.3-32-32-32H64zM416 272a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/></svg>
-                            </div>
-                            <div class="stat-details">
-                                <div class="global-stat-label">Dépenses Totales</div>
-                                <div class="global-stat-value" id="totalExpenses">0,00 €</div>
-                            </div>
+                        <div class="global-stat-item">
+                            <div class="global-stat-label">Dépenses Totales</div>
+                            <div class="global-stat-value" id="totalExpenses">0,00 €</div>
                         </div>
-                        <div class="global-stat-item sales-item">
-                            <div class="stat-icon-wrapper">
-                                <img src="https://cdn-icons-png.flaticon.com/512/1389/1389079.png" alt="Ventes" style="width: 24px; height: 24px;">
-                            </div>
-                            <div class="stat-details">
-                                <div class="global-stat-label">Ventes Totales</div>
-                                <div class="global-stat-value profit" id="totalSales">0,00 €</div>
-                            </div>
+                        <div class="global-stat-item">
+                            <div class="global-stat-label">Ventes Totales</div>
+                            <div class="global-stat-value profit" id="totalSales">0,00 €</div>
                         </div>
                     </div>
                 </div>
@@ -184,84 +167,54 @@
                         <input type="url" id="cardmarketUrl" name="cardmarketUrl" required
                             placeholder="https://www.cardmarket.com/...">
                     </div>
-                    <div class="form-group" id="quantityGroup">
-                        <label for="cardQuantity">Nombre d'exemplaires</label>
-                        <input type="number" id="cardQuantity" name="cardQuantity" value="1" min="1" required>
-                    </div>
-
-                    <div id="bulkFields" style="display:none; max-height: 300px; overflow-y: auto; border: 1px solid #2d2d2d; padding: 10px; margin-bottom: 15px; border-radius: 4px;">
-                        <!-- Les champs dynamiques seront insérés ici par JS -->
-                    </div>
-
-                    <div id="singleCardFields">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="cardCondition">État *</label>
-                                <select id="cardCondition" name="cardCondition" required>
-                                    <option value="NM">NM (Near Mint)</option>
-                                    <option value="EX">EX (Excellent)</option>
-                                    <option value="LP">LP (Light Played)</option>
-                                    <option value="GOOD">GOOD</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="cardLanguage">Langue *</label>
-                                <select id="cardLanguage" name="cardLanguage" required>
-                                    <option value="FR">FR (Français)</option>
-                                    <option value="ENG">ENG (Anglais)</option>
-                                    <option value="JP">JP (Japonais)</option>
-                                    <option value="DE">DE (Allemand)</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="purchasePrice">Prix d'achat (€) *</label>
-                                <input type="number" id="purchasePrice" name="purchasePrice" step="0.01" required
-                                    placeholder="0.00">
-                            </div>
-                            <div class="form-group">
-                                <label for="currentPrice">Prix actuel (€)</label>
-                                <input type="number" id="currentPrice" name="currentPrice" step="0.01" placeholder="0.00">
-                            </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="cardCondition">État *</label>
+                            <select id="cardCondition" name="cardCondition" required>
+                                <option value="NM">NM (Near Mint)</option>
+                                <option value="EX">EX (Excellent)</option>
+                                <option value="LP">LP (Light Played)</option>
+                                <option value="GOOD">GOOD</option>
+                            </select>
                         </div>
                         <div class="form-group">
-                            <div class="checkbox-group">
-                                <input type="checkbox" id="isSold" name="isSold">
-                                <label for="isSold" style="margin: 0;">Cette carte a été vendue</label>
-                            </div>
+                            <label for="cardLanguage">Langue *</label>
+                            <select id="cardLanguage" name="cardLanguage" required>
+                                <option value="FR">FR (Français)</option>
+                                <option value="ENG">ENG (Anglais)</option>
+                                <option value="JP">JP (Japonais)</option>
+                                <option value="DE">DE (Allemand)</option>
+                            </select>
                         </div>
-                        <div class="form-group" id="salePriceGroup" style="display: none;">
-                            <label for="salePrice">Prix de vente (€) *</label>
-                            <input type="number" id="salePrice" name="salePrice" step="0.01" placeholder="0.00">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="purchasePrice">Prix d'achat (€) *</label>
+                            <input type="number" id="purchasePrice" name="purchasePrice" step="0.01" required
+                                placeholder="0.00">
                         </div>
+                        <div class="form-group">
+                            <label for="currentPrice">Prix actuel (€)</label>
+                            <input type="number" id="currentPrice" name="currentPrice" step="0.01" placeholder="0.00">
+                            <small style="color: #808080; font-size: 0.75rem;">Partagé entre exemplaires
+                                identiques</small>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="isSold" name="isSold">
+                            <label for="isSold" style="margin: 0;">Cette carte a été vendue</label>
+                        </div>
+                    </div>
+                    <div class="form-group" id="salePriceGroup" style="display: none;">
+                        <label for="salePrice">Prix de vente (€) *</label>
+                        <input type="number" id="salePrice" name="salePrice" step="0.01" placeholder="0.00">
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button class="btn" type="button" data-action="closeModal">Annuler</button>
                 <button class="btn btn-primary" type="submit" form="cardForm" id="submitBtn">Ajouter</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal d'Aide -->
-    <div class="modal" id="helpModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">Comment utiliser</h2>
-                <button class="close-btn" id="closeHelpModal" type="button">×</button>
-            </div>
-            <div class="modal-body">
-                <p style="color: #d4af37; font-weight: bold; margin-bottom: 1rem;">Bienvenue sur votre Portfolio Pokémon !</p>
-                <p style="margin-bottom: 1rem;">Voici quelques conseils pour bien démarrer :</p>
-                <ul style="padding-left: 1.5rem; line-height: 1.6; color: #b8b8b8;">
-                    <li style="margin-bottom: 0.5rem;"><strong>Fonctionnement manuel :</strong> Il n'y a pas d'API, donc toutes les informations doivent être modifiées à la main.</li>
-                    <li style="margin-bottom: 0.5rem;"><strong>Ajouter une carte :</strong> Cliquez sur le bouton "+ Ajouter une carte" pour enregistrer vos achats. Vous pouvez ajouter plusieurs exemplaires d'un coup.</li>
-                    <li style="margin-bottom: 0.5rem;"><strong>Suivre la valeur :</strong> Mettez à jour régulièrement le "Prix Actuel" de vos cartes via l'icône 🔄 ou ✎ pour voir l'évolution de votre investissement.</li>
-                    <li style="margin-bottom: 0.5rem;"><strong>Vendre :</strong> Lorsqu'une carte est vendue, passez son statut à "Oui" dans la colonne Vendue pour calculer votre bénéfice réel.</li>
-                    <li><strong>Analyser :</strong> Consultez l'onglet "Analyse" (sur mobile) ou la colonne de droite (sur PC) pour voir vos graphiques de performance.</li>
-                </ul>
             </div>
         </div>
     </div>
@@ -375,11 +328,6 @@
             document.getElementById('submitLoginBtn').addEventListener('click', (e) => handleAuth(e, 'login'));
             document.getElementById('submitRegisterBtn').addEventListener('click', (e) => handleAuth(e, 'register'));
 
-            // Help Modal Bindings
-            document.getElementById('helpBtn').addEventListener('click', () => document.getElementById('helpModal').classList.add('active'));
-            document.getElementById('closeHelpModal').addEventListener('click', () => document.getElementById('helpModal').classList.remove('active'));
-            document.getElementById('helpModal').addEventListener('click', (e) => { if (e.target.id === 'helpModal') document.getElementById('helpModal').classList.remove('active'); });
-
             // App Init
             initCharts();
             renderCards();
@@ -396,75 +344,6 @@
             });
             document.querySelectorAll('[data-action="filterCondition"]').forEach(btn => {
                 btn.addEventListener('click', (e) => filterByCondition(e.currentTarget.dataset.value, e.currentTarget));
-            });
-
-            // Gestionnaire pour le changement de quantité (Mode Bulk)
-            document.getElementById('cardQuantity')?.addEventListener('input', (e) => {
-                const qty = parseInt(e.target.value) || 1;
-                const singleFields = document.getElementById('singleCardFields');
-                const bulkFields = document.getElementById('bulkFields');
-                
-                if (qty > 1) {
-                    // Mode multiple : on cache les champs uniques et on génère la liste
-                    singleFields.style.display = 'none';
-                    // Désactiver les champs uniques pour éviter les erreurs de validation HTML "An invalid form control is not focusable"
-                    singleFields.querySelectorAll('input, select').forEach(el => el.disabled = true);
-                    
-                    bulkFields.style.display = 'block';
-                    
-                    // Récupérer les valeurs par défaut
-                    const defCond = document.getElementById('cardCondition').value;
-                    const defLang = document.getElementById('cardLanguage').value;
-                    const defPurch = document.getElementById('purchasePrice').value;
-                    const defCurr = document.getElementById('currentPrice').value;
-                    
-                    let html = '';
-                    for(let i=0; i<qty; i++) {
-                        html += `
-                        <div class="bulk-row" style="border-bottom: 1px solid #2d2d2d; padding-bottom: 10px; margin-bottom: 10px;">
-                            <div style="font-weight: bold; margin-bottom: 5px; color: #d4af37;">Exemplaire #${i+1}</div>
-                            <div class="form-row">
-                                <div class="form-group" style="margin-bottom: 5px;">
-                                    <label style="font-size: 0.8rem;">État</label>
-                                    <select class="bulk-condition" style="padding: 8px; background: #2d2d2d; border: 1px solid #3d3d3d; color: #e0e0e0; border-radius: 4px; width: 100%;">
-                                        <option value="NM" ${defCond==='NM'?'selected':''}>NM</option>
-                                        <option value="EX" ${defCond==='EX'?'selected':''}>EX</option>
-                                        <option value="LP" ${defCond==='LP'?'selected':''}>LP</option>
-                                        <option value="GOOD" ${defCond==='GOOD'?'selected':''}>GOOD</option>
-                                    </select>
-                                </div>
-                                <div class="form-group" style="margin-bottom: 5px;">
-                                    <label style="font-size: 0.8rem;">Langue</label>
-                                    <select class="bulk-language" style="padding: 8px; background: #2d2d2d; border: 1px solid #3d3d3d; color: #e0e0e0; border-radius: 4px; width: 100%;">
-                                        <option value="FR" ${defLang==='FR'?'selected':''}>FR</option>
-                                        <option value="ENG" ${defLang==='ENG'?'selected':''}>ENG</option>
-                                        <option value="JP" ${defLang==='JP'?'selected':''}>JP</option>
-                                        <option value="DE" ${defLang==='DE'?'selected':''}>DE</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group" style="margin-bottom: 0;">
-                                    <label style="font-size: 0.8rem;">Prix Achat (€)</label>
-                                    <input type="number" class="bulk-purchase" step="0.01" value="${defPurch}" style="padding: 8px; background: #2d2d2d; border: 1px solid #3d3d3d; color: #e0e0e0; border-radius: 4px; width: 100%;">
-                                </div>
-                                <div class="form-group" style="margin-bottom: 0;">
-                                    <label style="font-size: 0.8rem;">Prix Actuel (€)</label>
-                                    <input type="number" class="bulk-current" step="0.01" value="${defCurr}" style="padding: 8px; background: #2d2d2d; border: 1px solid #3d3d3d; color: #e0e0e0; border-radius: 4px; width: 100%;">
-                                </div>
-                            </div>
-                        </div>`;
-                    }
-                    bulkFields.innerHTML = html;
-                } else {
-                    // Mode simple
-                    singleFields.style.display = 'block';
-                    singleFields.querySelectorAll('input, select').forEach(el => el.disabled = false);
-                    toggleSoldFields(); // Réappliquer la logique de vente
-                    
-                    bulkFields.style.display = 'none';
-                    bulkFields.innerHTML = '';
-                }
             });
 
             // Mobile Tab Navigation
@@ -486,18 +365,15 @@
             const loginBtn = document.getElementById('loginBtn');
             const userInfo = document.getElementById('userInfo');
             const userEmailDisplay = document.getElementById('userEmailDisplay');
-            const saveWarning = document.getElementById('saveWarning');
 
             if (currentUser) {
                 loginBtn.style.display = 'none';
                 userInfo.style.display = 'flex';
                 userEmailDisplay.textContent = currentUser.email;
-                if (saveWarning) saveWarning.style.display = 'none';
             } else {
                 loginBtn.style.display = 'block';
                 userInfo.style.display = 'none';
                 userEmailDisplay.textContent = '';
-                if (saveWarning) saveWarning.style.display = 'block';
             }
         }
 
@@ -614,11 +490,6 @@
             document.getElementById('isCloning').value = '';
             document.getElementById('salePriceGroup').style.display = 'none';
 
-            // Reset Bulk UI
-            document.getElementById('cardQuantity').value = 1;
-            document.getElementById('quantityGroup').style.display = 'block';
-            document.getElementById('cardQuantity').dispatchEvent(new Event('input')); // Trigger reset logic
-
             if (editCard) {
                 document.getElementById('modalTitle').textContent = 'Modifier une carte';
                 document.getElementById('submitBtn').textContent = 'Enregistrer';
@@ -638,7 +509,6 @@
                 ['cardName', 'cardImage', 'cardmarketUrl', 'cardLanguage'].forEach(id => {
                     document.getElementById(id).disabled = false;
                 });
-                document.getElementById('quantityGroup').style.display = 'none'; // Pas de quantité en édition
             } else if (cloneFromCard) {
                 document.getElementById('modalTitle').textContent = 'Cloner une carte';
                 document.getElementById('submitBtn').textContent = 'Cloner';
@@ -684,56 +554,27 @@
                 name: document.getElementById('cardName').value,
                 imageUrl: document.getElementById('cardImage').value,
                 cardmarketUrl: document.getElementById('cardmarketUrl').value,
-                condition: !document.getElementById('cardCondition').disabled ? document.getElementById('cardCondition').value : 'NM',
-                language: !document.getElementById('cardLanguage').disabled ? document.getElementById('cardLanguage').value : 'FR',
-                purchasePrice: !document.getElementById('purchasePrice').disabled ? parseFloat(document.getElementById('purchasePrice').value) : 0,
-                currentPrice: !document.getElementById('currentPrice').disabled ? (parseFloat(document.getElementById('currentPrice').value) || null) : null,
-                isSold: !document.getElementById('isSold').disabled ? document.getElementById('isSold').checked : false,
-                salePrice: (!document.getElementById('isSold').disabled && document.getElementById('isSold').checked) ? parseFloat(document.getElementById('salePrice').value) : null,
+                condition: document.getElementById('cardCondition').value,
+                language: document.getElementById('cardLanguage').value,
+                purchasePrice: parseFloat(document.getElementById('purchasePrice').value),
+                currentPrice: parseFloat(document.getElementById('currentPrice').value) || null,
+                isSold: document.getElementById('isSold').checked,
+                salePrice: document.getElementById('isSold').checked ? parseFloat(document.getElementById('salePrice').value) : null,
             };
 
             if (cardId) {
                 cards = cards.map(c => c.id === cardId ? { ...c, ...cardData, updatedAt: new Date().toISOString() } : c);
             } else {
-                const quantity = parseInt(document.getElementById('cardQuantity').value) || 1;
-                
-                if (quantity > 1) {
-                    // Création multiple avec champs spécifiques
-                    const bulkRows = document.querySelectorAll('.bulk-row');
-                    bulkRows.forEach((row, index) => {
-                        const condition = row.querySelector('.bulk-condition').value;
-                        const language = row.querySelector('.bulk-language').value;
-                        const purchasePrice = parseFloat(row.querySelector('.bulk-purchase').value) || 0;
-                        const currentPrice = parseFloat(row.querySelector('.bulk-current').value) || null;
-                        
-                        const card = {
-                            name: cardData.name,
-                            imageUrl: cardData.imageUrl,
-                            cardmarketUrl: cardData.cardmarketUrl,
-                            condition: condition,
-                            language: language,
-                            purchasePrice: purchasePrice,
-                            currentPrice: currentPrice,
-                            isSold: false, // En masse, on assume non vendu
-                            salePrice: null,
-                            id: Date.now().toString() + Math.random().toString(36).substr(2, 9) + index,
-                            createdAt: new Date().toISOString()
-                        };
-                        cards.push(card);
-                    });
-                } else {
-                    // Création simple
-                    const card = {
-                        ...cardData,
-                        id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
-                        createdAt: new Date().toISOString()
-                    };
-                    const similarCards = cards.filter(c => getCardKey(c) === getCardKey(card));
-                    if (similarCards.length > 0 && similarCards[0].currentPrice !== null && !card.currentPrice) {
-                        card.currentPrice = similarCards[0].currentPrice;
-                    }
-                    cards.push(card);
+                const card = {
+                    ...cardData,
+                    id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+                    createdAt: new Date().toISOString()
+                };
+                const similarCards = cards.filter(c => getCardKey(c) === getCardKey(card));
+                if (similarCards.length > 0 && similarCards[0].currentPrice !== null) {
+                    card.currentPrice = similarCards[0].currentPrice;
                 }
+                cards.push(card);
             }
 
             try {

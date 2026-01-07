@@ -876,9 +876,7 @@ input[disabled] {
 
     /* Mobile Navigation & Tabs */
     .container {
-        padding-bottom: 7rem; /* Espace pour la barre de nav + marge de sécurité */
-        overflow-y: auto; /* Active le scroll vertical pour tout le contenu */
-        display: block; /* Désactive le flexbox qui limitait la hauteur */
+        padding-bottom: 5rem; /* Espace pour la barre de nav */
     }
 
     .mobile-nav {
@@ -924,11 +922,6 @@ input[disabled] {
         display: flex !important; /* Affiché si actif */
         flex-direction: column;
         gap: 1.5rem;
-        height: auto; /* Laisse le contenu définir la hauteur (plus de blocage à 100%) */
-    }
-
-    .table-container {
-        flex: none; /* Le tableau ne cherche plus à remplir l'écran */
-        height: auto; /* Il prend sa hauteur naturelle */
+        height: 100%;
     }
 }

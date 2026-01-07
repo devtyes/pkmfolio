@@ -1059,18 +1059,19 @@
                 options: chartOptions
             });
 
+            const monthlyLabels = ['Décembre', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin'];
             const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
             charts.monthly = new Chart(monthlyCtx, {
                 type: 'bar',
                 data: {
-                    labels: labels,
+                    labels: monthlyLabels,
                     datasets: [{
                         label: 'Achats',
-                        data: [0, 0, 0, 0, 0, 0],
+                        data: [0, 0, 0, 0, 0, 0, 0],
                         backgroundColor: '#6b5542'
                     }, {
                         label: 'Ventes',
-                        data: [0, 0, 0, 0, 0, 0],
+                        data: [0, 0, 0, 0, 0, 0, 0],
                         backgroundColor: '#d4af37'
                     }]
                 },
@@ -1082,31 +1083,23 @@
         function updateCharts() {
             const lastSixMonths = getLastSixMonths();
 
-            // Données pour le graphique mensuel (Achats/Ventes par mois)
-            const purchaseData = Array(6).fill(0);
-            const saleData = Array(6).fill(0);
-
             // Données pour le graphique portfolio (cumul investissement/valeur)
             const investedCumul = Array(6).fill(0);
             const valueCumul = Array(6).fill(0);
             const salesCumul = Array(6).fill(0);
+            
+            // Données pour le graphique mensuel (Achats/Ventes par mois)
+            const monthlyMonths = [11, 0, 1, 2, 3, 4, 5]; // Décembre to Juin
+            const monthlyPurchaseData = Array(7).fill(0);
+            const monthlySaleData = Array(7).fill(0);
+
 
             cards.forEach(card => {
                 const date = new Date(card.createdAt);
                 const cardMonth = date.getMonth();
                 const cardYear = date.getFullYear();
 
-                // Trouver l'index du mois correspondant
-                const monthIndex = lastSixMonths.findIndex(m => m.month === cardMonth && m.year === cardYear);
-
-                if (monthIndex !== -1) {
-                    purchaseData[monthIndex] += card.purchasePrice;
-                    if (card.isSold && card.salePrice) {
-                        saleData[monthIndex] += card.salePrice;
-                    }
-                }
-
-                // Pour le cumul, on ajoute à tous les mois >= date d'achat
+                // Logic for portfolio chart (original logic)
                 lastSixMonths.forEach((m, idx) => {
                     const monthDate = new Date(m.year, m.month, 1);
                     if (date <= monthDate || (cardMonth === m.month && cardYear === m.year)) {
@@ -1119,6 +1112,15 @@
                         }
                     }
                 });
+                
+                // Logic for monthly chart (new logic)
+                const monthlyIndex = monthlyMonths.indexOf(cardMonth);
+                if (monthlyIndex !== -1) {
+                    monthlyPurchaseData[monthlyIndex] += card.purchasePrice;
+                    if (card.isSold && card.salePrice) {
+                        monthlySaleData[monthlyIndex] += card.salePrice;
+                    }
+                }
             });
 
             // Mise à jour graphique portfolio
@@ -1128,8 +1130,8 @@
             charts.portfolio.update();
 
             // Mise à jour graphique mensuel
-            charts.monthly.data.datasets[0].data = purchaseData;
-            charts.monthly.data.datasets[1].data = saleData;
+            charts.monthly.data.datasets[0].data = monthlyPurchaseData;
+            charts.monthly.data.datasets[1].data = monthlySaleData;
             charts.monthly.update();
         }
 

@@ -24,6 +24,7 @@
             <div class="logo-text">Pokémon <span class="gold">Portfolio</span></div>
         </div>
         <div class="auth-controls">
+            <button class="btn" id="helpBtn">Comment utiliser</button>
             <div id="userInfo" style="display: none; align-items: center; gap: 10px;">
                 <span id="userEmailDisplay"></span>
                 <button class="btn" id="logoutBtn">Déconnexion</button>
@@ -243,6 +244,26 @@
         </div>
     </div>
 
+    <!-- Modal d'Aide -->
+    <div class="modal" id="helpModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Comment utiliser</h2>
+                <button class="close-btn" id="closeHelpModal" type="button">×</button>
+            </div>
+            <div class="modal-body">
+                <p style="color: #d4af37; font-weight: bold; margin-bottom: 1rem;">Bienvenue sur votre Portfolio Pokémon !</p>
+                <p style="margin-bottom: 1rem;">Voici quelques conseils pour bien démarrer :</p>
+                <ul style="padding-left: 1.5rem; line-height: 1.6; color: #b8b8b8;">
+                    <li style="margin-bottom: 0.5rem;"><strong>Ajouter une carte :</strong> Cliquez sur le bouton "+ Ajouter une carte" pour enregistrer vos achats. Vous pouvez ajouter plusieurs exemplaires d'un coup.</li>
+                    <li style="margin-bottom: 0.5rem;"><strong>Suivre la valeur :</strong> Mettez à jour régulièrement le "Prix Actuel" de vos cartes via l'icône 🔄 ou ✎ pour voir l'évolution de votre investissement.</li>
+                    <li style="margin-bottom: 0.5rem;"><strong>Vendre :</strong> Lorsqu'une carte est vendue, passez son statut à "Oui" dans la colonne Vendue pour calculer votre bénéfice réel.</li>
+                    <li><strong>Analyser :</strong> Consultez l'onglet "Analyse" (sur mobile) ou la colonne de droite (sur PC) pour voir vos graphiques de performance.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal d'Authentification -->
     <div class="modal" id="authModal">
         <div class="modal-content" style="max-width: 400px;">
@@ -351,6 +372,11 @@
             document.getElementById('logoutBtn').addEventListener('click', handleLogout);
             document.getElementById('submitLoginBtn').addEventListener('click', (e) => handleAuth(e, 'login'));
             document.getElementById('submitRegisterBtn').addEventListener('click', (e) => handleAuth(e, 'register'));
+
+            // Help Modal Bindings
+            document.getElementById('helpBtn').addEventListener('click', () => document.getElementById('helpModal').classList.add('active'));
+            document.getElementById('closeHelpModal').addEventListener('click', () => document.getElementById('helpModal').classList.remove('active'));
+            document.getElementById('helpModal').addEventListener('click', (e) => { if (e.target.id === 'helpModal') document.getElementById('helpModal').classList.remove('active'); });
 
             // App Init
             initCharts();

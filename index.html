@@ -1048,6 +1048,12 @@
                         borderColor: '#6b5542',
                         backgroundColor: 'rgba(107, 85, 66, 0.1)',
                         tension: 0.4
+                    }, {
+                        label: 'Ventes totales',
+                        data: [0, 0, 0, 0, 0, 0],
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.4
                     }]
                 },
                 options: chartOptions
@@ -1083,6 +1089,7 @@
             // Données pour le graphique portfolio (cumul investissement/valeur)
             const investedCumul = Array(6).fill(0);
             const valueCumul = Array(6).fill(0);
+            const salesCumul = Array(6).fill(0);
 
             cards.forEach(card => {
                 const date = new Date(card.createdAt);
@@ -1107,6 +1114,9 @@
                         if (!card.isSold) {
                             valueCumul[idx] += (card.currentPrice || 0);
                         }
+                        if (card.isSold && card.salePrice) {
+                            salesCumul[idx] += card.salePrice;
+                        }
                     }
                 });
             });
@@ -1114,6 +1124,7 @@
             // Mise à jour graphique portfolio
             charts.portfolio.data.datasets[0].data = valueCumul;
             charts.portfolio.data.datasets[1].data = investedCumul;
+            charts.portfolio.data.datasets[2].data = salesCumul;
             charts.portfolio.update();
 
             // Mise à jour graphique mensuel

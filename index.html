@@ -1005,12 +1005,13 @@
         function getLastSixMonths() {
             const months = [];
             const monthNames = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
-            const currentYear = new Date().getFullYear();
-            for (let i = 0; i < 12; i++) {
+            const now = new Date();
+            for (let i = 11; i >= 0; i--) {
+                const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
                 months.push({
-                    label: monthNames[i],
-                    month: i,
-                    year: currentYear
+                    label: monthNames[d.getMonth()],
+                    month: d.getMonth(),
+                    year: d.getFullYear()
                 });
             }
             return months;
@@ -1073,64 +1074,49 @@
         }
 
         function updateCharts() {
-            const monthNames = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
-            
-            let yearToShow = new Date().getFullYear();
-            if (cards.length > 0) {
-                 const latestDate = new Date(Math.max.apply(null, cards.map(c => new Date(c.createdAt))));
-                 yearToShow = latestDate.getFullYear();
-            }
+            const lastMonths = getLastSixMonths();
 
-            const chartMonths = [];
-            for (let i = 0; i < 12; i++) {
-                chartMonths.push({
-                    label: monthNames[i],
-                    month: i,
-                    year: yearToShow
-                });
-            }
-
-            const labels = chartMonths.map(m => m.label);
-            charts.portfolio.data.labels = labels;
-            charts.monthly.data.labels = labels;
+            charts.monthly.data.labels = lastMonths.map(m => m.label);
+            charts.portfolio.data.labels = lastMonths.map(m => m.label);
 
             const purchaseData = Array(12).fill(0);
             const saleData = Array(12).fill(0);
             const investedCumul = Array(12).fill(0);
             const valueCumul = Array(12).fill(0);
 
-            if (cards.length > 0) {
-                cards.forEach(card => {
-                    const date = new Date(card.createdAt);
-                    const cardMonth = date.getMonth();
-                    const cardYear = date.getFullYear();
+            cards.forEach(card => {
+                const date = new Date(card.createdAt);
+                const cardMonth = date.getMonth();
+                const cardYear = date.getFullYear();
 
-                    const monthIndex = chartMonths.findIndex(m => m.month === cardMonth && m.year === cardYear);
+                const monthIndex = lastMonths.findIndex(m => m.month === cardMonth && m.year === cardYear);
 
-                    if (monthIndex !== -1) {
-                        purchaseData[monthIndex] += card.purchasePrice;
-                        if (card.isSold && card.salePrice) {
-                            saleData[monthIndex] += card.salePrice;
+                if (monthIndex !== -1) {
+                    purchaseData[monthIndex] += card.purchasePrice;
+                    if (card.isSold && card.salePrice) {
+                        saleData[monthIndex] += card.salePrice;
+                    }
+                }
+
+                // Cumulative calculation
+                lastMonths.forEach((m, idx) => {
+                    if (cardYear < m.year || (cardYear === m.year && cardMonth <= m.month)) {
+                        investedCumul[idx] += card.purchasePrice;
+                        if (!card.isSold) {
+                            valueCumul[idx] += (card.currentPrice || 0);
                         }
                     }
-
-                    chartMonths.forEach((m, idx) => {
-                        const monthDate = new Date(m.year, m.month, 1);
-                        if (date <= monthDate || (cardMonth === m.month && cardYear === m.year)) {
-                            investedCumul[idx] += card.purchasePrice;
-                            if (!card.isSold) {
-                                valueCumul[idx] += (card.currentPrice || 0);
-                            }
-                        }
-                    });
                 });
-            }
+            });
 
+            // Update portfolio chart
             charts.portfolio.data.datasets[0].data = valueCumul;
             charts.portfolio.data.datasets[1].data = investedCumul;
+            
+            // Update monthly chart
             charts.monthly.data.datasets[0].data = purchaseData;
             charts.monthly.data.datasets[1].data = saleData;
-            
+
             charts.portfolio.update();
             charts.monthly.update();
         }

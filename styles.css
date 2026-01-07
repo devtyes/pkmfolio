@@ -837,11 +837,23 @@ input[disabled] {
 
 @media (max-width: 1024px) {
     .grid {
-        grid-template-columns: 1fr;
+        display: flex;
+        flex-direction: column;
+        height: auto;
     }
 
     .stats-grid {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    .container {
+        overflow-y: auto;
+        display: block;
+    }
+
+    .table-container {
+        flex: none;
+        height: auto;
     }
 }
 

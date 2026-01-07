@@ -91,6 +91,21 @@ body {
     border-radius: 4px;
 }
 
+.save-warning {
+    color: #ef4444;
+    font-size: 0.8rem;
+    font-weight: bold;
+    margin-right: 1rem;
+    text-align: right;
+    max-width: 200px;
+    line-height: 1.2;
+    animation: pulse-warning 2s infinite;
+}
+
+@keyframes pulse-warning {
+    0% { opacity: 1; } 50% { opacity: 0.8; } 100% { opacity: 1; }
+}
+
 /* Container */
 .container {
     max-width: 1920px;
@@ -839,6 +854,14 @@ input[disabled] {
         width: 100%;
         justify-content: center;
         flex-wrap: wrap;
+    }
+
+    .save-warning {
+        width: 100%;
+        text-align: center;
+        margin-right: 0;
+        margin-bottom: 0.75rem;
+        max-width: none;
     }
 
     .container {

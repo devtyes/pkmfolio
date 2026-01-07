@@ -24,6 +24,7 @@
             <div class="logo-text">Pokémon <span class="gold">Portfolio</span></div>
         </div>
         <div class="auth-controls">
+            <div id="saveWarning" class="save-warning">⚠️ Créez un compte pour conserver vos données</div>
             <button class="btn" id="helpBtn">Comment utiliser</button>
             <div id="userInfo" style="display: none; align-items: center; gap: 10px;">
                 <span id="userEmailDisplay"></span>
@@ -484,15 +485,18 @@
             const loginBtn = document.getElementById('loginBtn');
             const userInfo = document.getElementById('userInfo');
             const userEmailDisplay = document.getElementById('userEmailDisplay');
+            const saveWarning = document.getElementById('saveWarning');
 
             if (currentUser) {
                 loginBtn.style.display = 'none';
                 userInfo.style.display = 'flex';
                 userEmailDisplay.textContent = currentUser.email;
+                if (saveWarning) saveWarning.style.display = 'none';
             } else {
                 loginBtn.style.display = 'block';
                 userInfo.style.display = 'none';
                 userEmailDisplay.textContent = '';
+                if (saveWarning) saveWarning.style.display = 'block';
             }
         }
 

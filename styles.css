@@ -28,7 +28,7 @@ body {
     padding: 1rem 1.5rem;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     position: relative;
 }
 
@@ -68,6 +68,8 @@ body {
     display: flex;
     gap: 1rem;
     align-items: center;
+    position: absolute;
+    right: 1.5rem;
 }
 
 .auth-controls span {

@@ -1005,13 +1005,12 @@
         function getLastSixMonths() {
             const months = [];
             const monthNames = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
-            const now = new Date();
-            for (let i = 5; i >= 0; i--) {
-                const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+            const currentYear = new Date().getFullYear();
+            for (let i = 0; i < 12; i++) {
                 months.push({
-                    label: monthNames[d.getMonth()],
-                    month: d.getMonth(),
-                    year: d.getFullYear()
+                    label: monthNames[i],
+                    month: i,
+                    year: currentYear
                 });
             }
             return months;
@@ -1038,13 +1037,13 @@
                     labels: labels,
                     datasets: [{
                         label: 'Valeur actuelle',
-                        data: [0, 0, 0, 0, 0, 0],
+                        data: Array(12).fill(0),
                         borderColor: '#d4af37',
                         backgroundColor: 'rgba(212, 175, 55, 0.1)',
                         tension: 0.4
                     }, {
                         label: 'Total investi',
-                        data: [0, 0, 0, 0, 0, 0],
+                        data: Array(12).fill(0),
                         borderColor: '#6b5542',
                         backgroundColor: 'rgba(107, 85, 66, 0.1)',
                         tension: 0.4
@@ -1060,11 +1059,11 @@
                     labels: labels,
                     datasets: [{
                         label: 'Achats',
-                        data: [0, 0, 0, 0, 0, 0],
+                        data: Array(12).fill(0),
                         backgroundColor: '#6b5542'
                     }, {
                         label: 'Ventes',
-                        data: [0, 0, 0, 0, 0, 0],
+                        data: Array(12).fill(0),
                         backgroundColor: '#d4af37'
                     }]
                 },
@@ -1077,12 +1076,12 @@
             const lastSixMonths = getLastSixMonths();
 
             // Données pour le graphique mensuel (Achats/Ventes par mois)
-            const purchaseData = Array(6).fill(0);
-            const saleData = Array(6).fill(0);
+            const purchaseData = Array(12).fill(0);
+            const saleData = Array(12).fill(0);
 
             // Données pour le graphique portfolio (cumul investissement/valeur)
-            const investedCumul = Array(6).fill(0);
-            const valueCumul = Array(6).fill(0);
+            const investedCumul = Array(12).fill(0);
+            const valueCumul = Array(12).fill(0);
 
             cards.forEach(card => {
                 const date = new Date(card.createdAt);

@@ -888,6 +888,11 @@ input[disabled] {
         max-width: none;
     }
 
+    .grid {
+        display: block;
+        height: auto;
+    }
+
     .container {
         padding: 1rem;
     }

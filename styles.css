@@ -975,7 +975,22 @@ input[disabled] {
         height: auto; /* Il prend sa hauteur naturelle */
     }
 
-    .modal-footer {
-        flex-direction: column; /* Empile les boutons (Annuler, Suivant, Ajouter) sur mobile */
+        .modal-footer {
+
+            flex-direction: column; /* Empile les boutons (Annuler, Suivant, Ajouter) sur mobile */
+
+        }
+
     }
-}
+
+    
+
+    /* Hide the monthly analysis block */
+
+    .card:has(#monthlyChart) {
+
+        display: none;
+
+    }
+
+    

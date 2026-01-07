@@ -393,6 +393,12 @@
                     await signInWithEmailAndPassword(auth, email, password);
                 } else {
                     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                    // Initialisation du document utilisateur dans Firestore
+                    await setDoc(doc(db, "users", userCredential.user.uid), {
+                        email: email,
+                        createdAt: new Date().toISOString(),
+                        cards: [] // On initialise avec un tableau vide
+                    });
                     await sendEmailVerification(userCredential.user);
                     alert("Compte créé ! Un email de vérification a été envoyé à " + email + ". Veuillez vérifier votre boîte de réception.");
                 }
@@ -415,7 +421,8 @@
             if (currentUser && db) {
                 // Save to Cloud
                 try {
-                    await setDoc(doc(db, "users", currentUser.uid), { cards: cards });
+                    // On ajoute { merge: true } pour ne pas effacer l'email et la date de création
+                    await setDoc(doc(db, "users", currentUser.uid), { cards: cards }, { merge: true });
                 } catch (e) {
                     console.error("Error saving to cloud", e);
                 }
